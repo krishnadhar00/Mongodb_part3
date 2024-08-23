@@ -1,0 +1,64 @@
+How to get distinct values of a particular key?
+1. We can use the distinct function in order to get all distinct values of a particular key.
+command : db.collectionname.distinct("key");
+command : db.collectionname.find({"dewpoint.value":999.9}).count(); // for finding the key value inside key.
+
+Operators in MongoDB
+2. MongoDB provides different comparison, logical, bitwise etc operators that we can use very easily.
+3. To use these operators for comparison and logical operations, instead of directly assigning a key-value pair for your filters etc, put your key and assign it an object, inside the assigned object, put the key as your operator and value as the value to put.
+4. command : db.collectionName.find({property/key: {$operator: value}}) // operator like ne-> not equal to.
+eg. db.weather_data.find({type:{$ne:"FM-13"}});
+
+Commonly used operators:
+$ne -> not equals
+$eq -> equals
+$lt -> less than
+$lte -> less than or equal to
+$gt -> greater than
+$gte -> greater than or equal to
+$and -> logical and
+$or -> logical or
+$not -> logical not
+$nor -> logical nor
+$in -> for checking in the array
+$nin -> not in the array
+
+eg: db.weather_data.find({"dewPoint.value":{$lt:999}}).count();
+eg: db.weather_data.find({"dewPoint.value":{$gt:999}}).count();
+eg: db.weather_data.find({$and:[{"dewPoint.value":{$lt:999}},{"dewPoint.value":{gt:990}}]});
+eg: db.weather_data.find({$and:[{elevation:{$lt:8000}},{elevation:{gt:1000}}]});
+
+If you want to find all the records based on a property and compare that with a bunch of values in an array such that the property should be equal to any one of them then we can use $in.
+eg: db.weather_data.find({callLetters:{$in:['3EHH','3EIZ','3EJF']}}).count();    // in used in array.
+
+Analysing queries : 
+How much time it will take to run the query or how many operation willl perform to run this queries. and so on.
+5. We can analyse our queries using the explain function. Inside this function, we can pass an argument executionStats and it will provide us with the details.
+6. command : db.weather_data.find().explain("executionStats);  // it will return the object. it will tell the query planner , executionStats, also return the nreturned show how many records they return. also tell the running host machine, version and git version.
+
+These are present inside the explain keyword for knowing more about tye data.
+COLLSCAN : for a collection scan.
+IXSCAN : for scanning index keys.
+FETCH : retrieving documents.
+GROUP : grouping the documents.
+
+Indexing ?
+Indexing is a mechanism using which a database prepared more data structures to store data in a particular order based on particular keys, for faster search.
+command : db.weather_data.find({elevation:{$lt:8000}}).count(); // it gives the count and doing indexing if we checkiing the properties using explain function.
+command : db.weather_data.find({elevation:{$lt:8000}}).count().explain("executionStats");
+
+List all the indexes present in the collection.?
+7. command : db.collectionName.getIndexes(); // it will give all the indexes present in the collections.
+
+To remove an index from the collection ?
+8. command : db.collectionName.dropIndex("name");  // index name should visible in db.collectionName.getIndexes(); just take name from there and keep in drop it will delete that index.
+
+To create an index for a collection
+9. command : db.collectionName.createIndexes({elevation:1}) // 1 for ascending order and -1 for descending order.
+
+Analyzing Indexes
+Before we created our index on the elevation property we were reading all the docs i.e. approx 9991 docs, to fetch all the docs with elevation less than 5000. But after creating an index this number will decrease drastically.
+
+
+
+
